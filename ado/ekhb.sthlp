@@ -1,7 +1,7 @@
 {smcl}
 {title:Title}
 
-{phang} {cmd:ekhb} Decomposition of effects in non-linear probability models using the KHB-method {p_end}
+{phang} {cmd:ekhb} Decomposition of effects in non-linear probability models using the KHB-method (extension) {p_end}
 
 {title:Syntax}
 

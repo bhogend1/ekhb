@@ -1,0 +1,3 @@
+Extension to khb (help ekhb if installed). Bram Hogendoorn. Implements the Karlson, Holm, and Breen (KHB) method for 
+comparing the estimated coefficients of two nested nonlinear probability models.
+Additions: constraints, measurement error, multiple imputation.

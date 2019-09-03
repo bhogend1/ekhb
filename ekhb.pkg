@@ -1,0 +1,25 @@
+d 'EKHB': Extension to KHB method
+d
+d Ekhb computes the KHB mediation decomposition for nonlinear
+d outcomes. It offers more or less the same functionalities as the
+d original khb command. However, it includes three additions:
+d Users can specify linear constraints, can correct for measurement
+d error, and can use the command for multiply imputed datasets.
+d
+d
+d KW: KHB
+d KW: decomposition
+d KW: nonlinear
+d KW: mediation
+d KW: gsem
+d
+d Requires: Stata version 14
+d
+d Distribution-Date: 20190903
+d
+d
+d Authors: Bram Hogendoorn, University of Amsterdam
+d Support: Email b.hogendoorn@uva.nl
+d
+f ado/ekhb.ado
+f ado/ekhb.sthlp

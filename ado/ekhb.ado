@@ -2,7 +2,6 @@ capture program drop ekhb
 program ekhb, eclass properties(mi)
 syntax anything [if] [in] [fweight iweight pweight], Decompose(varname numeric) Mediators(varlist numeric min=1) [Adjust(varlist numeric) Controls(varlist fv ts) DISentangle patha pathb RELiability(string asis) CONStraints(passthru) vce(passthru) outmat(string asis) from(passthru) level(cilevel) NOIsily *]
 
-
 * input
 // check if dependent variable is numeric
 gettoken model depvar : anything
@@ -204,8 +203,8 @@ if "`pathb'"!="" {
 
 * obtain effects
 // direct effect
-local directcoef = _b[`depvar':`decompose']
-local directvar = (_se[`depvar':`decompose'])^2
+scalar directcoef = _b[`depvar':`decompose']
+scalar directvar = (_se[`depvar':`decompose'])^2
 
 // indirect effects
 tempname b_fin V_fin
@@ -282,27 +281,27 @@ local N_clust = e(N_clust)
 
 // post previous lincoms for faster execution
 tempname b V
-matrix define `b' = (`directcoef',`indirectcoef',`adjustcoef')
-matrix define `V' = (`directvar',0,0 \ 0,`indirectvar',0 \ 0,0,`adjustvar')
+matrix define `b' = (directcoef,`indirectcoef',`adjustcoef')
+matrix define `V' = (directvar,0,0 \ 0,`indirectvar',0 \ 0,0,`adjustvar')
 matrix colnames `b' = temp_direct temp_indirect temp_adjust
 matrix colnames `V' = temp_direct temp_indirect temp_adjust
 matrix rownames `V' = temp_direct temp_indirect temp_adjust
 ereturn post `b' `V', obs(`N')
 quietly lincom temp_direct + temp_indirect + temp_adjust
-local totalcoef = r(estimate)
-local totalvar = r(se)^2
+scalar totalcoef = r(estimate)
+scalar totalvar = r(se)^2
 
 
 * prepare matrices
 // total, indirect, adjustment, direct effect
-matrix `b_fin'[1,`npathvars'+1] 			= `totalcoef'
-matrix `V_fin'[`npathvars'+1,`npathvars'+1] = `totalvar'
+matrix `b_fin'[1,`npathvars'+1] 			= totalcoef
+matrix `V_fin'[`npathvars'+1,`npathvars'+1] = totalvar
 matrix `b_fin'[1,`npathvars'+2] 			= `indirectcoef'
 matrix `V_fin'[`npathvars'+2,`npathvars'+2] = `indirectvar'
 matrix `b_fin'[1,`npathvars'+3] 			= `adjustcoef'
 matrix `V_fin'[`npathvars'+3,`npathvars'+3] = `adjustvar'
-matrix `b_fin'[1,`npathvars'+4] 			= `directcoef'
-matrix `V_fin'[`npathvars'+4,`npathvars'+4] = `directvar'
+matrix `b_fin'[1,`npathvars'+4] 			= directcoef
+matrix `V_fin'[`npathvars'+4,`npathvars'+4] = directvar
 
 // coefficients and variance
 matrix define `b' = J(1,`npathvars'+4+`nmediators'+`nmediators',0)
@@ -335,12 +334,12 @@ matrix colnames `V' = `mediators' `adjust' "Total_effect" "Indirect_effect" "Adj
 
 // additional output matrix with mediation percentages
 tempname percexpl
-matrix define `percexpl' = (100*`b'[1,1]/`totalcoef')
+matrix define `percexpl' = (100*`b'[1,1]/totalcoef)
 forvalues i = 2/`nmediators' {
 	local x : word `i' of `nmediators'
-	matrix `percexpl' = (`percexpl' \ 100*`b'[1,`i']/`totalcoef')
+	matrix `percexpl' = (`percexpl' \ 100*`b'[1,`i']/totalcoef)
 }
-matrix `percexpl' = (`percexpl' \ 100*`b'[1,`npathvars'+2]/`totalcoef')
+matrix `percexpl' = (`percexpl' \ 100*`b'[1,`npathvars'+2]/totalcoef)
 matrix rownames `percexpl' = `mediators' "Indirect_effect"
 matrix colnames `percexpl' = "Mediation"
 

@@ -156,8 +156,6 @@ This is especially useful to detect problems that occur in the internal regressi
 
 {pstd} Karlson, K.B./Holm, A./Breen, R. (2011): Comparing regression coefficients between same-sample nested models using logit and probit. A new method. Sociological Methodology 42:286-313.{p_end}
 
-{pstd} Karlson, K.B./Holm, A. (2011): Decomposing primary and secondary effects: A new decomposition method. Research in Stratification and Social Mobility 29:221-237.{p_end}
-
 
 {title:Author}
 

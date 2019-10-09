@@ -81,6 +81,7 @@ By default, all disentangled coefficients of the {it:mediator} variables are ret
 {phang}{opt patha} and {opt pathb} request that the estimates of path A and path B are returned.
 Path A appends the coefficients and standard errors from the {it:decompose-var} to the {it:mediators} to the estimation results.
 Path B appends the coefficients and standard errors from the {it:mediators} to the {it:depvar} to the estimation results.
+The product of path A and path B equals the indirect effect.
 There is no {it:pathc} option, since path C is returned by default as the direct effect.{p_end}
 
 {phang}{opt rel:iability(varname # [varname # [...]])} allows you to specify the fraction of variance not due to measurement error for measurement variables. It follows the syntax of {help sem and gsem option reliability:sem}.

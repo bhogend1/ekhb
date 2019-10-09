@@ -78,9 +78,10 @@ However, if you specify this option, the adjustment variables are not included i
 {phang}{opt dis:entangle} requests that the disentangled coefficients of the {it:adjust} variables are returned. This slows down the estimation in large datasets.
 By default, all disentangled coefficients of the {it:mediator} variables are returned. If you do not want this, specify them as {it:adjust} variables.{p_end}
 
-{phang}{opt patha} requests that the estimates of path A are returned. That is, the coefficients and standard errors from the {it:decompose-var} to the {it:mediators} are appended to the estimation results.{p_end}
-
-{phang}{opt pathb} requests that the estimates of path B are returned. That is, the coefficients and standard errors from the {it:mediators} to the {it:depvar} are appended to the estimation results.{p_end}
+{phang}{opt patha} and {opt pathb} request that the estimates of path A and path B are returned.
+Path A appends the coefficients and standard errors from the {it:decompose-var} to the {it:mediators} to the estimation results.
+Path B appends the coefficients and standard errors from the {it:mediators} to the {it:depvar} to the estimation results.
+There is no {it:pathc} option, since path C is returned by default as the direct effect.{p_end}
 
 {phang}{opt rel:iability(varname # [varname # [...]])} allows you to specify the fraction of variance not due to measurement error for measurement variables. It follows the syntax of {help sem and gsem option reliability:sem}.
 It is intended for the correction of classical measurement error in {it:mediator} variables.

@@ -146,12 +146,12 @@ if "`reliability'"!="" {
 	
 		quietly sem `x_addpaths' `x_firstpaths' `x_lastpath' if `touse' [`weight'`exp'], reliability(`reliability') `constraints' `options'
 		matrix define `startvalues' = e(b)
-		di "." _cont
+		di "obtain starting values..." _cont
 
 		`disoutput' gsem `addpaths' `lastpath' if `touse' [`weight'`exp'], listwise reliability(`reliability') `constraints' from(`startvalues', skip) `options'
 		matrix define `startvalues' = e(b)
 		local from "from(`startvalues', skip)"
-		di "." _cont
+		di "correct for reliability..." _cont
 	}
 }
 
@@ -166,7 +166,7 @@ if "`reliability'"=="" & "`from'"=="" {
 
 // estimate
 `disoutput' gsem `firstpaths' `lastpath' `addpaths' if `touse' [`weight'`exp'], listwise noheader nodvheader reliability(`reliability') `vce' `constraints' `from' `options'
-di "." _cont
+di "estimate structural equation model..." _cont
 
 // return coefficient vector
 if "`outmat'"!="" {
@@ -233,13 +233,13 @@ forvalues i = 1/`nmediators' {
 	matrix `b_fin'[1,`i'] = r(b)
 	matrix `V_fin'[`i',`i'] = r(V)
 }
-di "." _cont
+di "disentangle indirect effects..." _cont
 
 quietly nlcom `indirecteffect'
 tempname indirectcoef indirectvar
 matrix define `indirectcoef' = r(b)
 matrix define `indirectvar' = r(V)
-di "." _cont
+di "full indirect effect..." _cont
 
 // adjustment effects
 local adjusteffect=0
@@ -266,12 +266,12 @@ if "`adjust'"!="" {
 	quietly nlcom `adjusteffect'
 	matrix define `adjustcoef' = r(b)
 	matrix define `adjustvar' = r(V)
+	di "disentangle adjustment effects..." _cont
 }
 else {
 	matrix define `adjustcoef' = 0
 	matrix define `adjustvar' = 0
 }
-di "." _cont
 
 * total effect
 // prepare posting results
@@ -292,6 +292,7 @@ quietly lincom temp_direct + temp_indirect + temp_adjust
 tempname totalcoef totalvar
 scalar `totalcoef' = r(estimate)
 scalar `totalvar' = r(se)^2
+di "total effect..." _cont
 
 
 * prepare matrices

@@ -144,14 +144,13 @@ if "`reliability'"!="" {
 		local x_firstpaths=subinstr("`firstpaths'",", regress"," ",.)
 		local x_lastpath=subinstr("`lastpath'",", `model'"," ",.)
 	
+		di as text "obtain starting values..." _cont
 		quietly sem `x_addpaths' `x_firstpaths' `x_lastpath' if `touse' [`weight'`exp'], reliability(`reliability') `constraints' `options'
 		matrix define `startvalues' = e(b)
-		di "obtain starting values..." _cont
 
 		`disoutput' gsem `addpaths' `lastpath' if `touse' [`weight'`exp'], listwise reliability(`reliability') `constraints' from(`startvalues', skip) `options'
 		matrix define `startvalues' = e(b)
 		local from "from(`startvalues', skip)"
-		di "correct for reliability..." _cont
 	}
 }
 
@@ -159,14 +158,15 @@ if "`reliability'"!="" {
 * estimate the model
 // speed up starting values, if none given
 if "`reliability'"=="" & "`from'"=="" {
+	di as text "obtain starting values..." _cont
 	quietly gsem `lastpath' if `touse' [`weight'`exp'], listwise `constraints' `options'
 	matrix define `startvalues' = e(b)
 	local from "from(`startvalues', skip)"
 }
 
 // estimate
+di as text "estimate structural equation model..." _cont
 `disoutput' gsem `firstpaths' `lastpath' `addpaths' if `touse' [`weight'`exp'], listwise noheader nodvheader reliability(`reliability') `vce' `constraints' `from' `options'
-di "estimate structural equation model..." _cont
 
 // return coefficient vector
 if "`outmat'"!="" {
@@ -212,6 +212,7 @@ tempname b_fin V_fin
 matrix define `b_fin' = J(1,`npathvars'+4,0)
 matrix define `V_fin' = J(`npathvars'+4,`npathvars'+4,0)
 
+di as text "mediator effects..." _cont
 local indirecteffect=0
 forvalues i = 1/`nmediators' {
 	local x : word `i' of `mediators'
@@ -233,19 +234,19 @@ forvalues i = 1/`nmediators' {
 	matrix `b_fin'[1,`i'] = r(b)
 	matrix `V_fin'[`i',`i'] = r(V)
 }
-di "disentangle indirect effects..." _cont
 
+di as text "indirect effect..." _cont
 quietly nlcom `indirecteffect'
 tempname indirectcoef indirectvar
 matrix define `indirectcoef' = r(b)
 matrix define `indirectvar' = r(V)
-di "full indirect effect..." _cont
 
 // adjustment effects
 local adjusteffect=0
 tempname adjustcoef adjustvar
 
 if "`adjust'"!="" {
+	di as text "adjustment effect..." _cont
 	local nadjust : word count `adjust'
 
 	forvalues i = 1/`nadjust' {
@@ -266,7 +267,6 @@ if "`adjust'"!="" {
 	quietly nlcom `adjusteffect'
 	matrix define `adjustcoef' = r(b)
 	matrix define `adjustvar' = r(V)
-	di "disentangle adjustment effects..." _cont
 }
 else {
 	matrix define `adjustcoef' = 0
@@ -281,6 +281,7 @@ gen byte `samp_var' = e(sample)
 local N_clust = e(N_clust)
 
 // post previous lincoms for faster execution
+di as text "total effect..." _cont
 tempname b V
 matrix define `b' = (`directcoef',`indirectcoef',`adjustcoef')
 matrix define `V' = (`directvar',0,0 \ 0,`indirectvar',0 \ 0,0,`adjustvar')
@@ -292,7 +293,6 @@ quietly lincom temp_direct + temp_indirect + temp_adjust
 tempname totalcoef totalvar
 scalar `totalcoef' = r(estimate)
 scalar `totalvar' = r(se)^2
-di "total effect..." _cont
 
 
 * prepare matrices
